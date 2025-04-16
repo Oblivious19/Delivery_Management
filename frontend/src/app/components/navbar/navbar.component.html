@@ -1,0 +1,53 @@
+<!-- components/navbar/navbar.component.html -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/">Delivery Management System</a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <ng-container *ngIf="isLoggedIn">
+            <!-- Admin Links -->
+            <ng-container *ngIf="isAdmin">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/admin/orders" routerLinkActive="active">Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/admin/delivery-persons" routerLinkActive="active">Delivery Persons</a>
+              </li>
+            </ng-container>
+            
+            <!-- Customer Links -->
+            <ng-container *ngIf="!isAdmin">
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/customer/orders" routerLinkActive="active">My Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="/customer/orders/new" routerLinkActive="active">New Order</a>
+              </li>
+            </ng-container>
+          </ng-container>
+        </ul>
+        
+        <ul class="navbar-nav">
+          <ng-container *ngIf="isLoggedIn; else loginBtn">
+            <li class="nav-item">
+              <span class="nav-link">Welcome, {{ isAdmin ? 'Admin' : 'Customer' }}</span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" (click)="logout(); $event.preventDefault()">Logout</a>
+            </li>
+          </ng-container>
+          
+          <ng-template #loginBtn>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/login">Login</a>
+            </li>
+          </ng-template>
+        </ul>
+      </div>
+    </div>
+  </nav>

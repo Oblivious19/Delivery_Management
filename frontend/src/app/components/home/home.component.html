@@ -1,0 +1,35 @@
+<!-- components/home/home.component.html -->
+<div class="container mt-5">
+    <div class="row">
+      <div class="col-md-8 offset-md-2 text-center">
+        <h1 class="display-4">Welcome to Delivery Management System</h1>
+        <p class="lead mt-4">An efficient system to manage your delivery operations</p>
+        
+        <div class="row mt-5">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Admin</h5>
+                <p class="card-text">Manage orders, delivery personnel, and system operations</p>
+                <button class="btn btn-primary" (click)="navigateToLogin('admin')">
+                  Login as Admin
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Customer</h5>
+                <p class="card-text">Track your orders and manage your deliveries</p>
+                <button class="btn btn-success" (click)="navigateToLogin('customer')">
+                  Login as Customer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

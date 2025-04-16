@@ -1,0 +1,50 @@
+<!-- components/delivery-persons/delivery-persons.component.html -->
+<div class="card">
+    <div class="card-header">
+      <h5>Delivery Persons</h5>
+    </div>
+    <div class="card-body">
+      <!-- Loading and Error Messages -->
+      <div *ngIf="isLoading" class="text-center my-3">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+  
+      <div *ngIf="errorMessage" class="alert alert-danger my-3">
+        {{ errorMessage }}
+      </div>
+  
+      <!-- Delivery Persons Table -->
+      <div class="table-responsive">
+        <table class="table table-striped" *ngIf="!isLoading && deliveryPersons.length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Contact Number</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let person of deliveryPersons">
+              <td>{{ person.personId }}</td>
+              <td>{{ person.personContactNumber }}</td>
+              <td>
+                <span class="badge" [ngClass]="getStatusClass(person.personStatus)">
+                  {{ person.personStatus }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div *ngIf="!isLoading && deliveryPersons.length === 0" class="alert alert-info">
+          No delivery persons found.
+        </div>
+      </div>
+  
+      <div class="mt-3">
+        <button class="btn btn-primary" (click)="loadDeliveryPersons()">Refresh</button>
+      </div>
+    </div>
+  </div>

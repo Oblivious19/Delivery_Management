@@ -1,0 +1,129 @@
+<div class="container mt-4">
+    <div class="row mb-3">
+      <div class="col">
+        <button class="btn btn-secondary" (click)="goBack()">
+          <i class="bi bi-arrow-left"></i> Back
+        </button>
+      </div>
+    </div>
+  
+    <!-- Loading Spinner -->
+    <div *ngIf="isLoading" class="d-flex justify-content-center my-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+      {{ errorMessage }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" (click)="errorMessage = ''"></button>
+    </div>
+  
+    <!-- Order Details -->
+    <div *ngIf="!isLoading && !errorMessage && order">
+      <div class="card mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h2>Order #{{ order.orderId }}</h2>
+          <span class="badge"
+            [ngClass]="{
+              'bg-warning': order.orderStatus === 'PENDING',
+              'bg-info': order.orderStatus === 'PROCESSING',
+              'bg-primary': order.orderStatus === 'SHIPPED' || order.orderStatus === 'OUT_FOR_DELIVERY',
+              'bg-success': order.orderStatus === 'DELIVERED',
+              'bg-danger': order.orderStatus === 'CANCELLED'
+            }">
+            {{ order.orderStatus }}
+          </span>
+        </div>
+        
+        <div class="card-body">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5>Order Information</h5>
+              <p><strong>Order Date:</strong> {{ order.orderDate | date:'medium' }}</p>
+              <p><strong>Order Amount:</strong> {{ order.orderAmount | currency }}</p>
+              <p><strong>Payment Method:</strong> {{ order.paymentMode }}</p>
+            </div>
+            
+            <div class="col-md-6" *ngIf="customer">
+              <h5>Customer Information</h5>
+              <p><strong>Name:</strong> {{ customer.customerName }}</p>
+              <p><strong>Email:</strong> {{ customer.customerEmail }}</p>
+              <p><strong>Address:</strong> {{ customer.customerAddress }}</p>
+            </div>
+          </div>
+          
+          <div class="row mb-4">
+            <div class="col-md-6" *ngIf="deliveryPerson">
+              <h5>Delivery Person</h5>
+              <p><strong>ID:</strong> {{ deliveryPerson.personId }}</p>
+              <p><strong>Contact:</strong> {{ deliveryPerson.personContactNumber }}</p>
+              <p><strong>Status:</strong> 
+                <span class="badge"
+                  [ngClass]="{
+                    'bg-success': deliveryPerson.personStatus === 'AVAILABLE',
+                    'bg-warning': deliveryPerson.personStatus === 'ASSIGNED',
+                    'bg-secondary': deliveryPerson.personStatus === 'UNAVAILABLE'
+                  }">
+                  {{ deliveryPerson.personStatus }}
+                </span>
+              </p>
+            </div>
+            
+            <!-- Assign Delivery Person (Admin only) -->
+            <div class="col-md-6" *ngIf="isAdmin && (!order.deliveryPersonId || order.orderStatus === 'PENDING')">
+              <h5>Assign Delivery Person</h5>
+              <div class="input-group mb-3">
+                <select class="form-select" [(ngModel)]="selectedDeliveryPersonId">
+                  <option [ngValue]="null">Select Delivery Person</option>
+                  <option *ngFor="let person of availableDeliveryPersons" [value]="person.personId">
+                    ID: {{ person.personId }} - Contact: {{ person.personContactNumber }}
+                  </option>
+                </select>
+                <button class="btn btn-primary" [disabled]="!selectedDeliveryPersonId" (click)="assignDeliveryPerson()">
+                  Assign
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-footer">
+          <div class="d-flex justify-content-between">
+            <!-- Actions for customers -->
+            <div *ngIf="!isAdmin">
+              <button *ngIf="canCancelOrder()" class="btn btn-danger me-2" (click)="cancelOrder()">
+                Cancel Order
+              </button>
+              <button *ngIf="canConfirmDelivery()" class="btn btn-success" (click)="confirmDelivery()">
+                Confirm Delivery
+              </button>
+            </div>
+            
+            <!-- Actions for admin -->
+            <div *ngIf="isAdmin" class="d-flex">
+              <div class="btn-group me-2" role="group">
+                <button class="btn btn-outline-primary" (click)="updateOrderStatus('PROCESSING')"
+                  [disabled]="order.orderStatus !== 'PENDING'">
+                  Mark Processing
+                </button>
+                <button class="btn btn-outline-primary" (click)="updateOrderStatus('SHIPPED')"
+                  [disabled]="order.orderStatus !== 'PROCESSING' || !order.deliveryPersonId">
+                  Mark Shipped
+                </button>
+                <button class="btn btn-outline-success" (click)="updateOrderStatus('DELIVERED')"
+                  [disabled]="order.orderStatus !== 'SHIPPED' && order.orderStatus !== 'OUT_FOR_DELIVERY'">
+                  Mark Delivered
+                </button>
+              </div>
+              
+              <button class="btn btn-outline-danger" (click)="deleteOrder()">
+                Delete Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

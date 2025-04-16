@@ -1,0 +1,31 @@
+<!-- components/customer-dashboard/customer-dashboard.component.html -->
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Customer Dashboard</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="list-group">
+                <a routerLink="/customer/orders" routerLinkActive="active" class="list-group-item list-group-item-action">
+                  My Orders
+                </a>
+                <a routerLink="/customer/orders/new" routerLinkActive="active" class="list-group-item list-group-item-action">
+                  Place New Order
+                </a>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

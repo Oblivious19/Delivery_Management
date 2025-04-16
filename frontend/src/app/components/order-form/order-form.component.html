@@ -1,0 +1,50 @@
+<!-- components/order-form/order-form.component.html -->
+<div class="card">
+    <div class="card-header">
+      <h5>Place New Order</h5>
+    </div>
+    <div class="card-body">
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+  
+      <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="orderAmount" class="form-label">Order Amount (₹)</label>
+          <input 
+            type="number" 
+            class="form-control" 
+            id="orderAmount" 
+            formControlName="orderAmount"
+            [class.is-invalid]="orderForm.get('orderAmount')?.invalid && orderForm.get('orderAmount')?.touched"
+          >
+          <div class="invalid-feedback" *ngIf="orderForm.get('orderAmount')?.invalid && orderForm.get('orderAmount')?.touched">
+            <span *ngIf="orderForm.get('orderAmount')?.errors?.['required']">Amount is required</span>
+            <span *ngIf="orderForm.get('orderAmount')?.errors?.['min']">Amount must be greater than 0</span>
+          </div>
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Payment Mode</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="cod" value="cod" formControlName="paymentMode">
+            <label class="form-check-label" for="cod">Cash on Delivery</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" id="online" value="online" formControlName="paymentMode">
+            <label class="form-check-label" for="online">Online Payment</label>
+          </div>
+        </div>
+  
+        <button 
+          type="submit" 
+          class="btn btn-primary" 
+          [disabled]="orderForm.invalid || isLoading || !customerId"
+        >
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+          Place Order
+        </button>
+        <a routerLink="/customer/orders" class="btn btn-link">Cancel</a>
+      </form>
+    </div>
+  </div>

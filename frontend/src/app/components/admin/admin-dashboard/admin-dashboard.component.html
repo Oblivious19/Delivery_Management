@@ -1,0 +1,31 @@
+<!-- components/admin-dashboard/admin-dashboard.component.html -->
+<app-navbar></app-navbar>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Admin Dashboard</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="list-group">
+                <a routerLink="/admin/orders" routerLinkActive="active" class="list-group-item list-group-item-action">
+                  Orders Management
+                </a>
+                <a routerLink="/admin/delivery-persons" routerLinkActive="active" class="list-group-item list-group-item-action">
+                  Delivery Persons
+                </a>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
