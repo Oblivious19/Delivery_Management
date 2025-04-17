@@ -11,7 +11,7 @@ import { catchError, map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ApiProviderService {
-  private useMockData = true;
+  private useMockData = false;
 
   constructor(
     private orderService: OrderService,
