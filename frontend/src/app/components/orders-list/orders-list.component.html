@@ -1,145 +1,213 @@
 <!-- components/orders-list/orders-list.component.html -->
-<div class="card">
-    <div class="card-header">
-      <h5>Orders Management</h5>
+<div class="orders-container">
+  <div class="stats-container">
+    <div class="stat-card">
+      <i class="bi bi-box-seam stat-icon"></i>
+      <h3>Total Orders</h3>
+      <div class="stats-value">{{ statistics.total }}</div>
     </div>
-    <div class="card-body">
-      <!-- Filter Controls -->
-      <div class="row mb-3">
-        <div class="col-md-4">
-          <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search by ID or Customer" [(ngModel)]="searchTerm">
-            <button class="btn btn-outline-secondary" type="button" (click)="searchTerm = ''">Clear</button>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <select class="form-select" [(ngModel)]="statusFilter">
-            <option value="">All Statuses</option>
-            <option value="new">New</option>
-            <option value="assigned">Assigned</option>
-            <option value="delivered">Delivered</option>
-            <option value="failed">Failed</option>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <button class="btn btn-primary" (click)="loadOrders()">Refresh</button>
-        </div>
-      </div>
-  
-      <!-- Loading and Error Messages -->
-      <div *ngIf="isLoading" class="text-center my-3">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-      </div>
-  
-      <div *ngIf="errorMessage" class="alert alert-danger my-3">
-        {{ errorMessage }}
-      </div>
-  
-      <!-- Orders Table -->
-      <div class="table-responsive">
-        <table class="table table-striped" *ngIf="!isLoading && orders.length > 0">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Customer</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Payment</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let order of filterOrders()">
-              <td>{{ order.orderId }}</td>
-              <td>{{ getCustomerName(order.customerId) }}</td>
-              <td>₹{{ order.orderAmount }}</td>
-              <td>{{ order.orderDate | date:'short' }}</td>
-              <td>
-                <span [ngClass]="{
-                  'badge bg-primary': order.orderStatus === 'new',
-                  'badge bg-warning': order.orderStatus === 'assigned',
-                  'badge bg-success': order.orderStatus === 'delivered',
-                  'badge bg-danger': order.orderStatus === 'failed'
-                }">
-                  {{ order.orderStatus }}
-                </span>
-              </td>
-              <td>{{ order.paymentMode }}</td>
-              <td>
-                <div class="btn-group">
-                  <button class="btn btn-sm btn-primary" (click)="selectOrder(order)">Manage</button>
-                  <button class="btn btn-sm btn-danger" (click)="deleteOrder(order.orderId)">Delete</button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        
-        <div *ngIf="!isLoading && orders.length === 0" class="alert alert-info">
-          No orders found.
-        </div>
-      </div>
-  
-      <!-- Order Management Modal -->
-      <div class="modal" [ngClass]="{'d-block': selectedOrder, 'd-none': !selectedOrder}" tabindex="-1">
-        <div class="modal-dialog">
-          <div class="modal-content" *ngIf="selectedOrder">
-            <div class="modal-header">
-              <h5 class="modal-title">Manage Order #{{ selectedOrder.orderId }}</h5>
-              <button type="button" class="btn-close" (click)="clearSelection()"></button>
-            </div>
-            <div class="modal-body">
-              <div class="mb-3">
-                <h6>Order Details</h6>
-                <p><strong>Customer:</strong> {{ getCustomerName(selectedOrder.customerId) }}</p>
-                <p><strong>Amount:</strong> ₹{{ selectedOrder.orderAmount }}</p>
-                <p><strong>Date:</strong> {{ selectedOrder.orderDate | date:'medium' }}</p>
-                <p><strong>Status:</strong> {{ selectedOrder.orderStatus }}</p>
-                <p><strong>Payment Mode:</strong> {{ selectedOrder.paymentMode }}</p>
-              </div>
-  
-              <div class="mb-3">
-                <h6>Assign Delivery Person</h6>
-                <div class="input-group">
-                  <select class="form-select" [(ngModel)]="selectedDeliveryPerson">
-                    <option value="">Select Delivery Person</option>
-                    <option *ngFor="let person of deliveryPersons" [value]="person.personId">
-                      {{ person.personId }} - ({{ person.personContactNumber }})
-                    </option>
-                  </select>
-                  <button class="btn btn-outline-primary" (click)="assignDeliveryPerson(selectedOrder.orderId)">
-                    Assign
-                  </button>
-                </div>
-              </div>
-  
-              <div class="mb-3">
-                <h6>Update Status</h6>
-                <div class="btn-group w-100">
-                  <button class="btn btn-outline-primary" (click)="updateOrderStatus(selectedOrder.orderId, 'new')">
-                    New
-                  </button>
-                  <button class="btn btn-outline-warning" (click)="updateOrderStatus(selectedOrder.orderId, 'assigned')">
-                    Assigned
-                  </button>
-                  <button class="btn btn-outline-success" (click)="updateOrderStatus(selectedOrder.orderId, 'delivered')">
-                    Delivered
-                  </button>
-                  <button class="btn btn-outline-danger" (click)="updateOrderStatus(selectedOrder.orderId, 'failed')">
-                    Failed
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" (click)="clearSelection()">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-backdrop fade show" *ngIf="selectedOrder"></div>
+    <div class="stat-card">
+      <i class="bi bi-clock-history stat-icon"></i>
+      <h3>Pending Orders</h3>
+      <div class="stats-value">{{ statistics.pending }}</div>
+    </div>
+    <div class="stat-card">
+      <i class="bi bi-truck stat-icon"></i>
+      <h3>In Progress</h3>
+      <div class="stats-value">{{ statistics.inProgress }}</div>
+    </div>
+    <div class="stat-card">
+      <i class="bi bi-check-circle stat-icon"></i>
+      <h3>Delivered</h3>
+      <div class="stats-value">{{ statistics.delivered }}</div>
     </div>
   </div>
+
+  <div class="filters-container">
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Search orders..."
+      />
+    </div>
+    <div class="status-filter">
+      <select [(ngModel)]="statusFilter">
+        <option value="all">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="in-progress">In Progress</option>
+        <option value="delivered">Delivered</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="orders-list">
+    <div *ngFor="let order of filterOrders()" class="order-card">
+      <div class="order-header">
+        <div class="order-id">#{{ order.id }}</div>
+        <div
+          class="order-status"
+          [ngClass]="'status-' + getStatusColor(order.orderStatus)"
+        >
+          {{ order.orderStatus }}
+        </div>
+      </div>
+      <div class="order-details">
+        <div class="customer-info">
+          <strong>Customer:</strong> {{ order.customerName }}
+        </div>
+        <div class="delivery-info">
+          <strong>Address:</strong> {{ order.deliveryAddress }}
+        </div>
+        <div class="delivery-person" *ngIf="order.deliveryPersonName">
+          <strong>Delivery Person:</strong> {{ order.deliveryPersonName }}
+        </div>
+        <div class="order-amount">
+          <strong>Amount:</strong> {{ order.totalAmount | currency }}
+        </div>
+      </div>
+      <div class="order-actions">
+        <button
+          *ngIf="!order.deliveryPersonId"
+          class="btn btn-primary"
+          (click)="assignDeliveryPerson(order.id)"
+        >
+          Assign Delivery Person
+        </button>
+        <button
+          *ngIf="order.orderStatus === 'pending'"
+          class="btn btn-success"
+          (click)="updateOrderStatus(order.id, 'in-progress')"
+        >
+          Start Delivery
+        </button>
+        <button
+          *ngIf="order.orderStatus === 'in-progress'"
+          class="btn btn-info"
+          (click)="updateOrderStatus(order.id, 'delivered')"
+        >
+          Mark as Delivered
+        </button>
+        <button class="btn btn-danger" (click)="deleteOrder(order.id)">
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Order Modal -->
+<div
+  class="modal"
+  [class.show]="showAddOrderModal"
+  [style.display]="showAddOrderModal ? 'block' : 'none'"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-plus-circle-fill me-2"></i>Add New Order
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeAddOrderModal()"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form #orderForm="ngForm" class="row g-3">
+          <div class="col-md-6">
+            <label for="customerName" class="form-label">Customer Name</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="bi bi-person-fill"></i
+              ></span>
+              <input
+                type="text"
+                class="form-control"
+                id="customerName"
+                name="customerName"
+                [(ngModel)]="newOrder.customerName"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="orderDate" class="form-label">Order Date</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="bi bi-calendar-fill"></i
+              ></span>
+              <input
+                type="date"
+                class="form-control"
+                id="orderDate"
+                name="orderDate"
+                [(ngModel)]="newOrder.orderDate"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-12">
+            <label for="deliveryAddress" class="form-label"
+              >Delivery Address</label
+            >
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="bi bi-geo-alt-fill"></i
+              ></span>
+              <textarea
+                class="form-control"
+                id="deliveryAddress"
+                name="deliveryAddress"
+                [(ngModel)]="newOrder.deliveryAddress"
+                required
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="totalAmount" class="form-label">Total Amount</label>
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="bi bi-currency-dollar"></i
+              ></span>
+              <input
+                type="number"
+                class="form-control"
+                id="totalAmount"
+                name="totalAmount"
+                [(ngModel)]="newOrder.orderAmount"
+                required
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeAddOrderModal()"
+        >
+          <i class="bi bi-x-lg me-2"></i>Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="addOrder()"
+          [disabled]="!orderForm.form.valid"
+        >
+          <i class="bi bi-check-lg me-2"></i>Add Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade show" *ngIf="showAddOrderModal"></div>

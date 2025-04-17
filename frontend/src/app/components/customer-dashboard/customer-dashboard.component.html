@@ -1,31 +1,57 @@
 <!-- components/customer-dashboard/customer-dashboard.component.html -->
-<app-navbar></app-navbar>
+<nav class="customer-navbar">
+  <div class="navbar-brand">
+    <i class="bi bi-truck"></i>
+    <span>Delivery System</span>
+  </div>
+  <div class="navbar-menu">
+    <a routerLink="/customer/orders" routerLinkActive="active" class="nav-link">
+      <i class="bi bi-box-seam"></i> My Orders
+    </a>
+    <a
+      routerLink="/customer/orders/new"
+      routerLinkActive="active"
+      class="nav-link"
+    >
+      <i class="bi bi-plus-circle"></i> New Order
+    </a>
+  </div>
+  <div class="navbar-end">
+    <button class="btn-logout" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </button>
+  </div>
+</nav>
 
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4>Customer Dashboard</h4>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-3">
-              <div class="list-group">
-                <a routerLink="/customer/orders" routerLinkActive="active" class="list-group-item list-group-item-action">
-                  My Orders
-                </a>
-                <a routerLink="/customer/orders/new" routerLinkActive="active" class="list-group-item list-group-item-action">
-                  Place New Order
-                </a>
-              </div>
-            </div>
-            <div class="col-md-9">
-              <router-outlet></router-outlet>
-            </div>
-          </div>
-        </div>
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Welcome to Your Delivery Dashboard</h1>
+    <p>Manage your orders and deliveries in one place</p>
+  </div>
+
+  <div class="main-content">
+    <div class="sidebar">
+      <div class="nav-menu">
+        <a
+          routerLink="/customer/orders"
+          routerLinkActive="active"
+          class="nav-item"
+        >
+          <i class="bi bi-box-seam"></i>
+          <span>My Orders</span>
+        </a>
+        <a
+          routerLink="/customer/orders/new"
+          routerLinkActive="active"
+          class="nav-item"
+        >
+          <i class="bi bi-plus-circle"></i>
+          <span>Place New Order</span>
+        </a>
       </div>
+    </div>
+    <div class="content-area">
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>
